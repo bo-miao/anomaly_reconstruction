@@ -17,7 +17,7 @@ def default_argument_parser():
     parser.add_argument('--label', default=1, type=int, help='whether has data label in training')
     parser.add_argument('--model_dir', type=str, default="/home/miaobo/project/anomaly_demo2/ckpt", help='directory of model')
 
-    parser.add_argument('--object_detection', default=1, type=int, help='whether use object level')
+    parser.add_argument('--object_detection', default=0, type=int, help='whether use object level')
     parser.add_argument('--path_h', default=64, type=int, help='object h')
     parser.add_argument('--path_w', default=64, type=int, help='object w')
 
@@ -64,7 +64,7 @@ def default_argument_parser():
     parser.add_argument('--is_nesterov', default=1, type=int, help='using Nesterov accelerated gradient or not')
     # lr setting
     parser.add_argument('--lr_mode', type=str, choices=['cos', 'step', 'poly', 'HTD'], default='cos', help='strategy of the learning rate')
-    parser.add_argument('--lr_milestones', nargs='+', type=int, default=[20,40,50], help='epochs at which we take a learning-rate step')
+    parser.add_argument('--lr_milestones', nargs='+', type=int, default=[20,30,40], help='epochs at which we take a learning-rate step')
     parser.add_argument('--lr_step_multiplier', default=0.1, type=float, metavar='M', help='lr multiplier at lr_milestones (default: 0.1)')
     parser.add_argument('--lr_multiplier', type=float, default=1.0, help='Learning rate multiplier for the unpretrained model.')
     parser.add_argument('--slow_start_epochs', type=int, default=5, help='Training model with small learning rate for few 10 epochs.')

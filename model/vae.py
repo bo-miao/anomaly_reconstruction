@@ -13,28 +13,6 @@ from .block import *
 from .discriminator import *
 
 
-class Unet_3d(torch.nn.Module):
-    def __init__(self, criterion=None, args=None):
-        super(Unet_3d, self).__init__()
-        n_channel = args.c
-        self.encoder = eval(args.encoder_arch)(n_channel, block='Basic_Encoder3d')
-        self.decoder = eval(args.decoder_arch)(n_channel, dim=256, block='Basic_Decoder3d')
-        self.activation = torch.nn.Tanh()
-        self.criterion = criterion
-        self.args = args
-
-    @autocast()
-    def forward(self, x, gt=None, label=None, train=True):
-        feature, skip1, skip2, skip3 = self.encoder(x)
-        feature = self.decoder(feature, skip1, skip2, skip3)
-        reconstructed_image = self.activation(feature)
-        reconstructed_image = reconstructed_image.squeeze(2)
-        gt = gt.squeeze(2)
-        pixel_loss = self.criterion(reconstructed_image, gt)
-        loss = {'pixel_loss': pixel_loss}
-        return reconstructed_image, loss
-
-
 class Unet_Light4(torch.nn.Module):
     def __init__(self, criterion=None, args=None):
         super(Unet_Light4, self).__init__()
@@ -93,6 +71,180 @@ class Unet_Free(torch.nn.Module):
         pixel_loss = self.criterion(reconstructed_image, gt)
         loss = {'pixel_loss': pixel_loss}
         return reconstructed_image, loss
+
+
+class Unet_Free_Seperate(torch.nn.Module):
+    def __init__(self, criterion=None, args=None):
+        super(Unet_Free_Seperate, self).__init__()
+        n_channel = args.c
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic')
+        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic')
+        self.criterion = criterion
+        self.args = args
+
+    @autocast()
+    def forward(self, x, gt=None, label=None, train=True):
+        b, c, h, w = x.shape
+
+        res = []
+        for i in range(c//3):
+            x_ = x[:, i*3:(i+1)*3]
+            feature, skip1, skip2, skip3 = self.encoder(x_)
+            reconstructed_image = self.decoder(feature, skip1, skip2, skip3)
+            res.append(reconstructed_image)
+
+        reconstructed_image = torch.cat(res, dim=1)
+        pixel_loss = self.criterion(reconstructed_image, gt)
+        loss = {'pixel_loss': pixel_loss}
+        return reconstructed_image, loss
+
+
+class Unet_Free_Adversarial(torch.nn.Module):
+    def __init__(self, criterion=None, args=None):
+        super(Unet_Free_Adversarial, self).__init__()
+        n_channel = args.c
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic')
+        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic')
+        self.criterion = criterion
+        self.args = args
+
+    @autocast()
+    def forward(self, x, gt=None, label=None, train=True):
+        b, c, h, w = x.size()
+
+        res = []
+        for i in range(c//3):
+            x_ = x[:, i*3:(i+1)*3]
+            feature, skip1, skip2, skip3 = self.encoder(x_)
+            reconstructed_image = self.decoder(feature, skip1, skip2, skip3)
+            res.append(reconstructed_image)
+
+        if train:
+            # noise = torch.from_numpy(-1 + 2*np.random.random((c, h, w)), dtype=float).cuda()
+            noise = torch.zeros_like(gt[0]).cuda()
+            label = label.view(-1)
+            gt[label == 1] = noise
+
+        reconstructed_image = torch.cat(res, dim=1)
+        pixel_loss = self.criterion(reconstructed_image, gt)
+        pixel_loss = torch.abs(pixel_loss)
+        pixel_loss = pixel_loss.view(pixel_loss.shape[0], -1).mean(1)
+
+        # anomaly negative loss exp
+        loss = {'pixel_loss': pixel_loss}
+        return reconstructed_image, loss
+
+
+class Unet_Free_Adversarial_2decoder(torch.nn.Module):
+    def __init__(self, criterion=None, args=None):
+        super(Unet_Free_Adversarial_2decoder, self).__init__()
+        n_channel = args.c
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic')
+        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic')
+        self.decoder2 = eval(args.decoder_arch)(t_length, n_channel, block='Basic')
+        self.criterion = criterion
+        self.args = args
+
+    @autocast()
+    def forward(self, x, gt=None, label=None, train=True):
+        b, c, h, w = x.size()
+        label = label.view(-1)
+
+        if train:
+            feature, skip1, skip2, skip3 = self.encoder(x)
+            feature_pos = feature[label == 1]
+            feature_neg = feature[label == 0]
+            skip1_pos = skip1[label == 1]
+            skip1_neg = skip1[label == 0]
+            skip2_pos = skip2[label == 1]
+            skip2_neg = skip2[label == 0]
+            skip3_pos = skip3[label == 1]
+            skip3_neg = skip3[label == 0]
+            gt_pos = gt[label == 1]
+            gt_neg = gt[label == 0]
+
+            pixel_loss_neg = 0
+            if feature_neg.shape[0] > 0:
+                reconstructed_image_neg = self.decoder(feature_neg, skip1_neg, skip2_neg, skip3_neg)
+                pixel_loss_neg = self.criterion(reconstructed_image_neg, gt_neg).mean()
+
+            pixel_loss_pos = 0
+            if feature_pos.shape[0] > 0:
+                reconstructed_image_pos = self.decoder2(feature_pos, skip1_pos, skip2_pos, skip3_pos)
+                pixel_loss_pos = self.criterion(reconstructed_image_pos, gt_pos).mean()
+
+            loss = {'pixel_loss': pixel_loss_neg + pixel_loss_pos}
+            return gt, loss
+
+        else:
+            feature, skip1, skip2, skip3 = self.encoder(x)
+            reconstructed_image_neg = self.decoder(feature, skip1, skip2, skip3)
+            reconstructed_image_pos = self.decoder2(feature, skip1, skip2, skip3)
+            pixel_loss_neg = self.criterion(reconstructed_image_neg, gt)
+            pixel_loss_pos = self.criterion(reconstructed_image_pos, gt)
+            pixel_loss_neg = pixel_loss_neg.view(pixel_loss_neg.shape[0], -1).mean(1)
+            pixel_loss_pos = pixel_loss_pos.view(pixel_loss_pos.shape[0], -1).mean(1)
+            loss = {'pixel_loss_neg': pixel_loss_neg, 'pixel_loss_pos': pixel_loss_pos}
+            return gt, loss
+
+
+# mark
+class Unet_Free_Adversarial_Classifier(torch.nn.Module):
+    def __init__(self, criterion=None, args=None):
+        super(Unet_Free_Adversarial_Classifier, self).__init__()
+        n_channel = args.c
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic')
+        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic')
+        self.classifier = ShallowNetD_Logit(criterion=FocalLoss(), args=args)
+        self.fc = nn.Linear(t_length*256, 1)
+        self.sigmoid = nn.Sigmoid()
+        nn.init.normal_(self.fc.weight, std=0.01)
+        self.criterion = criterion
+        self.criterion2 = FocalLoss()
+        self.args = args
+
+    @autocast()
+    def forward(self, x, gt=None, label=None, train=True):
+        b, c, h, w = x.size()
+        res = []
+        for i in range(c//3):
+            x_ = x[:, i*3:(i+1)*3]
+            feature, skip1, skip2, skip3 = self.encoder(x_)
+            reconstructed_image = self.decoder(feature, skip1, skip2, skip3)
+            res.append(reconstructed_image)
+
+        if train:
+            # noise = torch.from_numpy(-1 + 2*np.random.random((c, h, w)), dtype=float).cuda()
+            noise = torch.zeros_like(gt[0]).cuda()
+            label = label.view(-1)
+            gt[label == 1] = noise
+
+        reconstructed_image = torch.cat(res, dim=1)
+        pixel_loss = self.criterion(reconstructed_image, gt)
+        pixel_loss = torch.abs(pixel_loss)
+        pixel_loss = pixel_loss.view(pixel_loss.shape[0], -1).mean(1)
+
+        # classifier loss
+        input = res
+        logits = []
+        for i in input:
+            logit = self.classifier(i)
+            logits.append(logit)
+
+        logits = torch.cat(logits, dim=1)
+        logits = self.sigmoid(self.fc(logits))
+
+        if train:
+            classifier_loss = self.criterion2(logits, label)
+            loss = {'pixel_loss': pixel_loss, 'classifier_loss': classifier_loss}
+        else:
+            loss = {'pixel_loss': pixel_loss}
+
+        return reconstructed_image, loss, logits
 
 
 class Unet_Free_Classifier(torch.nn.Module):
@@ -270,25 +422,110 @@ def msra(module: nn.Module) -> None:
         nn.init.constant_(module.bias, 0)
 
 
-class Unet_optical_flow(torch.nn.Module):
+class ResUnetAdversarial(torch.nn.Module):
     def __init__(self, criterion=None, args=None):
-        super(Unet_optical_flow, self).__init__()
+        super(ResUnetAdversarial, self).__init__()
         n_channel = args.c
-        t_length = args.t_length
-        self.encoder = eval(args.encoder_arch)(t_length, n_channel)
-        self.decoder = eval(args.decoder_arch)(t_length, n_channel, dim=512, block='Residual')
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        self.encoder = Encoder_ResUnet()
         self.criterion = criterion
         self.args = args
 
     @autocast()
-    def forward(self, x, gt=None, optical_flow=None, train=True):
+    def forward(self, x, gt=None, label=None, train=True):
+        b, c, h, w = x.size()
 
-        feature, skip1, skip2, skip3 = self.encoder(x)
-        reconstructed_image, reconstructed_optical_flow = self.decoder(feature, skip1, skip2, skip3)
+        res = []
+        for i in range(c//3):
+            x_ = x[:, i*3:(i+1)*3]
+            reconstructed_image = self.encoder(x_)
+            res.append(reconstructed_image)
+
+        if train:
+            # noise = torch.from_numpy(-1 + 2*np.random.random((c, h, w)), dtype=float).cuda()
+            noise = torch.zeros_like(gt[0]).cuda()
+            label = label.view(-1)
+            gt[label == 1] = noise
+
+        reconstructed_image = torch.cat(res, dim=1)
         pixel_loss = self.criterion(reconstructed_image, gt)
-        optical_flow_loss = self.criterion(reconstructed_optical_flow, optical_flow)
+        pixel_loss = torch.abs(pixel_loss)
+        pixel_loss = pixel_loss.view(pixel_loss.shape[0], -1).mean(1)
+
+        # anomaly negative loss exp
+        loss = {'pixel_loss': pixel_loss}
+        return reconstructed_image, loss
+
+
+class ResUnet(nn.Module):
+    def __init__(self, criterion=None, args=None, filters=[16, 32, 64, 32]):
+        super(ResUnet, self).__init__()
+
+        n_channel = args.c
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        channel = n_channel * t_length
+        # channel = 9
+        self.input_layer = nn.Sequential(
+            nn.Conv2d(channel, filters[0], kernel_size=3, padding=1),
+            nn.BatchNorm2d(filters[0]),
+            nn.ReLU(),
+            nn.Conv2d(filters[0], filters[0], kernel_size=3, padding=1),
+        )
+        self.input_skip = nn.Sequential(
+            nn.Conv2d(channel, filters[0], kernel_size=3, padding=1)
+        )
+
+        self.residual_conv_1 = ResidualConv(filters[0], filters[1], 2, 1)
+        self.residual_conv_2 = ResidualConv(filters[1], filters[2], 2, 1)
+
+        self.bridge = ResidualConv(filters[2], filters[3], 2, 1)
+        # HERE TO ADD MEM [3]
+        self.upsample_1 = Upsample(filters[3], filters[3], 2, 2)
+        self.up_residual_conv1 = ResidualConv(filters[3] + filters[2], filters[2], 1, 1)
+
+        self.upsample_2 = Upsample(filters[2], filters[2], 2, 2)
+        self.up_residual_conv2 = ResidualConv(filters[2] + filters[1], filters[1], 1, 1)
+
+        self.upsample_3 = Upsample(filters[1], filters[1], 2, 2)
+        self.up_residual_conv3 = ResidualConv(filters[1] + filters[0], filters[0], 1, 1)
+
+        self.output_layer = nn.Sequential(
+            nn.Conv2d(filters[0], 3, 1, 1),
+            nn.Tanh(),
+        )
+
+        self.criterion = criterion
+        self.args = args
+
+    @autocast()
+    def forward(self, x, gt=None, memory=None,train=True):
+        # Encode
+        x1 = self.input_layer(x) + self.input_skip(x)
+        x2 = self.residual_conv_1(x1)
+        x3 = self.residual_conv_2(x2)
+        # Bridge         # Decode HERE TO ADD MEMORY 1/8 resolution
+        x4 = self.bridge(x3)
+        x4 = self.upsample_1(x4)
+        x5 = torch.cat([x4, x3], dim=1)
+
+        x6 = self.up_residual_conv1(x5)
+
+        x6 = self.upsample_2(x6)
+        x7 = torch.cat([x6, x2], dim=1)
+
+        x8 = self.up_residual_conv2(x7)
+
+        x8 = self.upsample_3(x8)
+        x9 = torch.cat([x8, x1], dim=1)
+
+        x10 = self.up_residual_conv3(x9)
+
+        reconstructed_image = self.output_layer(x10)
+
+        pixel_loss = self.criterion(reconstructed_image, gt)
         loss = {'pixel_loss': pixel_loss,
-                'optical_flow_loss': self.args.loss_opticalflow * optical_flow_loss}
+                'memory_loss': memory_loss,
+                }
         return reconstructed_image, loss
 
 

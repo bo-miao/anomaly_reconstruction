@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="a">
+    <serverData>
+      <paths name="a">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/anomaly_demo3" local="$PROJECT_DIR$" web="/anomaly_demo3" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

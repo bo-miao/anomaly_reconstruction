@@ -270,9 +270,14 @@ class DataLoaderNew(data.Dataset):
 
         # organize order 3-5ms
         length = len(batch)
-        batch = batch[:length//2] + batch[(length//2)+1:] + [batch[length//2]]
-        label = label[length//2]
-        batch = np.concatenate(batch, axis=0)
+
+        if length == 1:
+            batch = np.concatenate(batch, axis=0)
+            label = label[0]
+        else:
+            batch = batch[:length // 2] + batch[(length // 2) + 1:] + [batch[length // 2]]
+            label = label[length // 2]
+            batch = np.concatenate(batch, axis=0)
 
         if object_type:
             return torch.from_numpy(batch), torch.IntTensor([label]), torch.from_numpy(bboxes).float()

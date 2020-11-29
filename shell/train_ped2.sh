@@ -24,12 +24,12 @@ python net.py \
     --visualize_input 0 \
     --h 240 \
     --w 360 \
-    --path_h 32 \
-    --path_w 32 \
+    --path_h 64 \
+    --path_w 64 \
     --discriminator '' \
-    --arch 'Unet_Light4' \
-    --encoder_arch 'Encoder_Light4' \
-    --decoder_arch 'Decoder_Light4' \
+    --arch 'Unet_Free_Adversarial' \
+    --encoder_arch 'Encoder_Free' \
+    --decoder_arch 'Decoder_Free' \
     --dataset_type 'ped2' \
     --label 1 \
     --training_folder 'training/frames' \

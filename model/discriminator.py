@@ -7,7 +7,7 @@ from .norm import *
 
 
 class FocalWithLogitsLoss(nn.Module):
-    def __init__(self, alpha=1, gamma=5, reduction=True):
+    def __init__(self, alpha=1, gamma=3, reduction=True):
         super(FocalWithLogitsLoss, self).__init__()
         self.alpha = alpha  # imbalance
         self.gamma = gamma  # hard
@@ -17,6 +17,22 @@ class FocalWithLogitsLoss(nn.Module):
         pt = torch.sigmoid(inputs)
         loss = - self.alpha * (1 - pt) ** self.gamma * targets * torch.log(pt) - \
                (1 - self.alpha) * pt ** self.gamma * (1 - targets) * torch.log(1 - pt)
+        if self.reduction:
+            return torch.mean(loss)
+        else:
+            return loss
+
+
+class FocalLoss(nn.Module):
+    def __init__(self, alpha=1, gamma=3, reduction=True):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha  # imbalance
+        self.gamma = gamma  # hard
+        self.reduction = reduction
+
+    def forward(self, inputs, targets):
+        loss = - self.alpha * (1 - inputs) ** self.gamma * targets * torch.log(inputs) - \
+               (1 - self.alpha) * inputs ** self.gamma * (1 - targets) * torch.log(1 - inputs)
         if self.reduction:
             return torch.mean(loss)
         else:
@@ -106,7 +122,6 @@ class ShallowNetD(nn.Module):
         super(ShallowNetD, self).__init__()
 
         c = [32, 64, 128, 256, 1]
-        last_size = 4
         self.conv1 = torch.nn.Sequential(
             torch.nn.Conv2d(in_channels=3, out_channels=c[0], kernel_size=5, stride=2, padding=2),
             torch.nn.BatchNorm2d(c[0]),
@@ -116,7 +131,7 @@ class ShallowNetD(nn.Module):
         self.conv2 = _make_layers(block=Bottleneck, num=2, in_c=c[0], out_c=c[1], stride=2)
         self.conv3 = _make_layers(block=Bottleneck, num=3, in_c=c[1], out_c=c[2], stride=2)
         self.conv4 = _make_layers(block=Bottleneck, num=4, in_c=c[2], out_c=c[3], stride=2)
-        self.pool = nn.AvgPool2d(last_size, stride=1)
+        self.pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(c[3], c[-1])
         self.sigmoid = nn.Sigmoid()
         self.criterion = criterion
@@ -139,3 +154,28 @@ class ShallowNetD(nn.Module):
             return self.sigmoid(x)
 
 
+class ShallowNetD_Logit(nn.Module):
+    def __init__(self, criterion=None, args=None):
+        super(ShallowNetD_Logit, self).__init__()
+
+        c = [32, 64, 128, 256, 1]
+        self.conv1 = torch.nn.Sequential(
+            torch.nn.Conv2d(in_channels=3, out_channels=c[0], kernel_size=5, stride=2, padding=2),
+            torch.nn.BatchNorm2d(c[0]),
+            torch.nn.ReLU(inplace=True)
+        )
+
+        self.conv2 = _make_layers(block=Bottleneck, num=2, in_c=c[0], out_c=c[1], stride=2)
+        self.conv3 = _make_layers(block=Bottleneck, num=3, in_c=c[1], out_c=c[2], stride=2)
+        self.conv4 = _make_layers(block=Bottleneck, num=4, in_c=c[2], out_c=c[3], stride=2)
+        self.pool = nn.AdaptiveAvgPool2d(1)
+
+    @autocast()
+    def forward(self, x):
+        b = x.size()[0]
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        x = self.conv4(x)
+        x = self.pool(x).view(b, -1)
+        return x

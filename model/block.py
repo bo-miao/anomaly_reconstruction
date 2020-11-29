@@ -7,7 +7,7 @@ from torch.cuda.amp import autocast
 from torch.nn import Module, Parameter
 # personal pkg
 # from .norm import *
-from .light_resnet import *
+
 
 
 # class Classifier(nn.Module):
@@ -227,109 +227,6 @@ class Decoder(torch.nn.Module):
         return output
 ###################################################
 
-
-########## 3D #########################
-class Encoder_3d(torch.nn.Module):
-    def __init__(self, n_channel=3, block='Basic'):
-        super(Encoder_3d, self).__init__()
-
-        def Basic_(intInput, intOutput):
-            return torch.nn.Sequential(
-                torch.nn.Conv3d(in_channels=intInput, out_channels=intOutput, kernel_size=(2, 3, 3), stride=1, padding=(0, 1, 1)),
-                torch.nn.BatchNorm3d(intOutput),
-                torch.nn.ReLU(inplace=False),
-                torch.nn.Conv3d(in_channels=intOutput, out_channels=intOutput, kernel_size=(1, 3, 3), stride=1, padding=(0, 1, 1)),
-            )
-
-        self.moduleConv1 = eval(block)(n_channel, 32)
-        self.modulePool1 = torch.nn.MaxPool3d(kernel_size=(1, 2, 2), stride=(1, 2, 2))
-
-        self.moduleConv2 = eval(block)(32, 64)
-        self.modulePool2 = torch.nn.MaxPool3d(kernel_size=(1, 2, 2), stride=(1, 2, 2))
-
-        self.moduleConv3 = eval(block)(64, 128)
-        self.modulePool3 = torch.nn.MaxPool3d(kernel_size=(1, 2, 2), stride=(1, 2, 2))
-
-        self.moduleConv4 = Basic_(128, 256)
-        self.moduleBatchNorm = torch.nn.BatchNorm3d(256)
-        self.moduleReLU = torch.nn.ReLU(inplace=False)
-
-    @autocast()
-    def forward(self, x):
-        tensorConv1 = self.moduleConv1(x)
-        tensorPool1 = self.modulePool1(tensorConv1)
-
-        tensorConv2 = self.moduleConv2(tensorPool1)
-        tensorPool2 = self.modulePool2(tensorConv2)
-
-        tensorConv3 = self.moduleConv3(tensorPool2)
-        tensorPool3 = self.modulePool3(tensorConv3)
-
-        tensorConv4 = self.moduleConv4(tensorPool3)
-
-        return tensorConv4, tensorConv1, tensorConv2, tensorConv3
-        # 256, 1;  128, 2; 64, 4; 32, 6; in, 8;
-
-
-class Decoder_3d(torch.nn.Module):
-    def __init__(self, n_channel=3, dim=256, block='Basic'):
-        super(Decoder_3d, self).__init__()
-
-        def Gen(intInput, intOutput, nc):
-            return torch.nn.Sequential(
-                torch.nn.Conv3d(in_channels=intInput, out_channels=nc, kernel_size=(1, 3, 3), stride=1, padding=(0, 1, 1)),
-                torch.nn.BatchNorm3d(nc),
-                torch.nn.ReLU(inplace=False),
-                torch.nn.Conv3d(in_channels=nc, out_channels=nc, kernel_size=(1, 3, 3), stride=1, padding=(0, 1, 1)),
-                torch.nn.BatchNorm3d(nc),
-                torch.nn.ReLU(inplace=False),
-                torch.nn.Conv3d(in_channels=nc, out_channels=intOutput, kernel_size=(1, 3, 3), stride=1, padding=(0, 1, 1)),
-            )
-
-        def Upsample(nc, intOutput):
-            return torch.nn.Sequential(
-                torch.nn.ConvTranspose3d(in_channels=nc, out_channels=intOutput, kernel_size=(1, 3, 3), stride=(1, 2, 2), padding=(0, 1, 1),
-                                         output_padding=(0, 1, 1)),
-                torch.nn.BatchNorm3d(intOutput),
-                torch.nn.ReLU(inplace=False)
-            )
-
-        self.moduleConv = eval(block)(dim, 256, 1)
-        self.moduleUpsample4 = Upsample(256, 128)
-
-        self.line3 = Connect3d(128, 128, 2)
-        self.moduleDeconv3 = eval(block)(256, 128, 1)
-        self.moduleUpsample3 = Upsample(128, 64)
-
-        self.line2 = Connect3d(64, 64, 4)
-        self.moduleDeconv2 = eval(block)(128, 64, 1)
-        self.moduleUpsample2 = Upsample(64, 32)
-
-        self.line1 = Connect3d(32, 32, 6)
-        self.moduleDeconv1 = Gen(64, n_channel, 32)
-
-    @autocast()
-    def forward(self, x, skip1, skip2, skip3):
-        tensorConv = self.moduleConv(x)
-
-        tensorUpsample4 = self.moduleUpsample4(tensorConv)
-        cat4 = torch.cat((self.line3(skip3), tensorUpsample4), dim=1)
-
-        tensorDeconv3 = self.moduleDeconv3(cat4)
-        tensorUpsample3 = self.moduleUpsample3(tensorDeconv3)
-        cat3 = torch.cat((self.line2(skip2), tensorUpsample3), dim=1)
-
-        tensorDeconv2 = self.moduleDeconv2(cat3)
-        tensorUpsample2 = self.moduleUpsample2(tensorDeconv2)
-        cat2 = torch.cat((self.line1(skip1), tensorUpsample2), dim=1)
-
-        output = self.moduleDeconv1(cat2)
-
-        return output
-
-##############################################
-
-
 ###############Light ################################
 class Encoder_Light4(torch.nn.Module):
     def __init__(self, t_length=5, n_channel=3, block='Basic'):
@@ -527,9 +424,11 @@ class Encoder_Free(torch.nn.Module):
     def __init__(self, t_length=5, n_channel=3, block='Basic'):
         super(Encoder_Free, self).__init__()
 
+        # in_c = n_channel * (t_length - 1)
+        in_c = 3
         c = [16, 32, 16]
         self.conv1 = torch.nn.Sequential(
-            torch.nn.Conv2d(in_channels=n_channel * (t_length - 1), out_channels=c[0], kernel_size=3, stride=1, padding=1),
+            torch.nn.Conv2d(in_channels=in_c, out_channels=c[0], kernel_size=3, stride=1, padding=1),
             torch.nn.BatchNorm2d(c[0]),
             torch.nn.ReLU(inplace=False)
         )
@@ -571,10 +470,11 @@ class Decoder_Free(torch.nn.Module):
         #         torch.nn.ReLU(inplace=False)
         #     )
 
+        in_c = 16
         c = [16, 32, 16, 16, 3]
         # 8,16 64,16 32,32 16,16
         self.conv1 = torch.nn.Sequential(
-            torch.nn.Conv2d(in_channels=c[0], out_channels=c[0], kernel_size=3, stride=1, padding=1),
+            torch.nn.Conv2d(in_channels=in_c, out_channels=c[0], kernel_size=3, stride=1, padding=1),
             torch.nn.BatchNorm2d(c[0]),
             torch.nn.ReLU(inplace=False)
         )  # 16,32
@@ -603,18 +503,116 @@ class Decoder_Free(torch.nn.Module):
         x = self.conv1(x)
         x = self.upsample(x)
 
-        x = torch.cat((x, skip3), dim=1)
+        x = torch.cat((x, skip3), dim=1)  # 16->32
         x = self.conv2(x)
         x = self.upsample(x)
 
-        x = torch.cat((x, skip2), dim=1)
+        x = torch.cat((x, skip2), dim=1)  # 32->64
         x = self.conv3(x)
         x = self.upsample(x)
 
-        x = torch.cat((x, skip1), dim=1)
-        x = self.conv4(x)
+        x = torch.cat((x, skip1), dim=1)  # 16->32
+        x = self.conv4(x)  # 32->16->3
 
         return x
+
+
+class ResidualConv(nn.Module):
+    def __init__(self, input_dim, output_dim, stride, padding):
+        super(ResidualConv, self).__init__()
+
+        self.conv_block = nn.Sequential(
+            nn.BatchNorm2d(input_dim),
+            nn.ReLU(),
+            nn.Conv2d(
+                input_dim, output_dim, kernel_size=3, stride=stride, padding=padding
+            ),
+            nn.BatchNorm2d(output_dim),
+            nn.ReLU(),
+            nn.Conv2d(output_dim, output_dim, kernel_size=3, padding=1),
+        )
+        self.conv_skip = nn.Sequential(
+            nn.Conv2d(input_dim, output_dim, kernel_size=3, stride=stride, padding=1),
+            nn.BatchNorm2d(output_dim),
+        )
+
+    def forward(self, x):
+
+        return self.conv_block(x) + self.conv_skip(x)
+
+
+class Upsample(nn.Module):
+    def __init__(self, input_dim, output_dim, kernel, stride):
+        super(Upsample, self).__init__()
+
+        self.upsample = nn.ConvTranspose2d(
+            input_dim, output_dim, kernel_size=kernel, stride=stride
+        )
+
+    def forward(self, x):
+        return self.upsample(x)
+
+
+class Encoder_ResUnet(torch.nn.Module):
+    def __init__(self, t_length=5, n_channel=3, block='Basic'):
+        super(Encoder_ResUnet, self).__init__()
+
+        filters = [16, 32, 64, 32]
+        channel = 3
+        self.input_layer = nn.Sequential(
+            nn.Conv2d(channel, filters[0], kernel_size=3, padding=1),
+            nn.BatchNorm2d(filters[0]),
+            nn.ReLU(),
+            nn.Conv2d(filters[0], filters[0], kernel_size=3, padding=1),
+        )
+        self.input_skip = nn.Sequential(
+            nn.Conv2d(channel, filters[0], kernel_size=3, padding=1)
+        )
+
+        self.residual_conv_1 = ResidualConv(filters[0], filters[1], 2, 1)
+        self.residual_conv_2 = ResidualConv(filters[1], filters[2], 2, 1)
+
+        self.bridge = ResidualConv(filters[2], filters[3], 2, 1)
+        # HERE TO ADD MEM [3]
+        self.upsample_1 = Upsample(filters[3], filters[3], 2, 2)
+        self.up_residual_conv1 = ResidualConv(filters[3] + filters[2], filters[2], 1, 1)
+
+        self.upsample_2 = Upsample(filters[2], filters[2], 2, 2)
+        self.up_residual_conv2 = ResidualConv(filters[2] + filters[1], filters[1], 1, 1)
+
+        self.upsample_3 = Upsample(filters[1], filters[1], 2, 2)
+        self.up_residual_conv3 = ResidualConv(filters[1] + filters[0], filters[0], 1, 1)
+
+        self.output_layer = nn.Sequential(
+            nn.Conv2d(filters[0], 3, 1, 1),
+            nn.Tanh(),
+        )
+
+    @autocast()
+    def forward(self, x):
+        x1 = self.input_layer(x) + self.input_skip(x)
+        x2 = self.residual_conv_1(x1)
+        x3 = self.residual_conv_2(x2)
+        # Bridge         # Decode HERE TO ADD MEMORY 1/8 resolution
+        x4 = self.bridge(x3)
+        x4 = self.upsample_1(x4)
+        x5 = torch.cat([x4, x3], dim=1)
+
+        x6 = self.up_residual_conv1(x5)
+
+        x6 = self.upsample_2(x6)
+        x7 = torch.cat([x6, x2], dim=1)
+
+        x8 = self.up_residual_conv2(x7)
+
+        x8 = self.upsample_3(x8)
+        x9 = torch.cat([x8, x1], dim=1)
+
+        x10 = self.up_residual_conv3(x9)
+
+        reconstructed_image = self.output_layer(x10)
+
+        return reconstructed_image
 
 
 class Decoder_Norm3(torch.nn.Module):
@@ -665,3 +663,9 @@ class Decoder_Norm3(torch.nn.Module):
 
         return output
 ###############################################
+
+
+if __name__ == "__main__":
+    m = Encoder_ResUnet()
+    a = torch.rand(2,3,256,256)
+    print(m(a).shape)

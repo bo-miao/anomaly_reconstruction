@@ -1,24 +1,30 @@
-class Solution(object):
-    def main(self, n):
-        if n <= 6:
-            return n
+def adjust_heap(lists, i, size):
+    lchild = 2 * i + 1
+    rchild = 2 * i + 2
+    max = i
+    if i < size // 2:
+        if lchild < size and lists[lchild] > lists[max]:
+            max = lchild
+        if rchild < size and lists[rchild] > lists[max]:
+            max = rchild
+        if max != i:
+            lists[max], lists[i] = lists[i], lists[max]
+            adjust_heap(lists, max, size)
 
-        i2, i3, i5 = 0, 0, 0
-        res = [1]
-        cur_num = 1
-        while cur_num < n:
-            min_value = min(res[i2] * 2, res[i3] * 3, res[i5] * 5)
-            res.append(min_value)
-            while res[i2] * 2 <= min_value:
-                i2 += 1
-            while res[i3] * 3 <= min_value:
-                i3 += 1
-            while res[i5] * 5 <= min_value:
-                i5 += 1
 
-            cur_num += 1
+def build_heap(lists, size):
+    for i in range(0, (size // 2))[::-1]:
+        adjust_heap(lists, i, size)
 
-        return res
 
-m = Solution()
-print(m.main(10))
+def heap_sort(lists):
+    size = len(lists)
+    build_heap(lists, size)
+    for i in range(0, size)[::-1]:
+        lists[0], lists[i] = lists[i], lists[0]
+        adjust_heap(lists, 0, i)
+    return lists
+
+a = [4,2,1,6,2,19,22]
+
+print(heap_sort(a))
