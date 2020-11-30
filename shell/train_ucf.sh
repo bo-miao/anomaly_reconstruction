@@ -27,7 +27,7 @@ python net.py \
     --h 256 \
     --w 256 \
     --discriminator '' \
-    --arch 'ResUnetAdversarial' \
+    --arch 'Unet_Free_Adversarial' \
     --encoder_arch 'Encoder_Free' \
     --decoder_arch 'Decoder_Free' \
     --dataset_type 'airs_anomaly2' \
@@ -41,7 +41,7 @@ python net.py \
     --epochs 100 \
     --is_amp 1 \
     --optim 'adamW' \
-    --resume '/home/miaobo/project/anomaly_demo2/ckpt/best_37ResUnetAdversarial0,1_ResUnetAdversarial__airs_anomaly2_checkpoint.pth.tar' \
-    --evaluate \
-    --demo 'video|/data/miaobo/script/video2/Normal_006.mp4'
+    #--resume '/home/miaobo/project/anomaly_demo2/ckpt/best_37ResUnetAdversarial0,1_ResUnetAdversarial__airs_anomaly2_checkpoint.pth.tar' \
+    #--evaluate \
+    #--demo 'video|/data/miaobo/script/video2/Normal_006.mp4'
 

@@ -124,12 +124,7 @@ def evaluate_new_D(model, D, test_batch, args):
 
 
 def evaluate_new(model, test_batch, args):
-    if 'ResNet' in args.arch:
-        return evaluate_resnet(model, test_batch, args)
-
-    if 'Unet_Free_Adversarial_2decoder' in args.arch:
-        return evaluate_Unet_Free_Adversarial_2decoder(model, test_batch, args)
-
+    # UNET CONCATE CLASSIFIER (RECONSTRUCTION AND CLASSIFICATION TASK)
     if 'Classifier' in args.arch:
         if args.object_detection:
             print("EVALUATING NORMAL OBJECT ENCODER CLASSIFIER MODEL...")
@@ -138,6 +133,7 @@ def evaluate_new(model, test_batch, args):
             print("EVALUATING NORMAL ENCODER CLASSIFIER MODEL...")
             return evaluate_two_stage(model, test_batch, args)
 
+    # UNET (RECONSTRUCTION TASK)
     elif args.object_detection:  # object level prediction
         print("EVALUATING NORMAL OBJECT MODEL...")
         return evaluate_object(model, test_batch, args)
@@ -486,72 +482,3 @@ def visualize_single(image):
 
     return True
 
-
-def evaluate_Unet_Free_Adversarial_2decoder(model, test_batch, args):
-    avg_loss = metric.AverageMeter('avg_loss', ':.4e')
-    single_time = metric.AverageMeter('Time', ':6.3f')
-    progress = metric.ProgressMeter(len(test_batch), avg_loss, single_time, prefix="Evaluation: ")
-
-    model.eval()
-
-    label_list = []
-    predict_list = []
-    counter = 0
-    for k, (images, labels) in enumerate(test_batch):
-        images = images.cuda(non_blocking=True)
-        labels = labels.cuda(non_blocking=True)
-        counter += 1
-
-        # input_image = images[:, 0:channel]
-        # target_image = images[:, channel:]
-        input_image = images.detach()
-        target_image = images.detach()
-        b, c, h, w = input_image.shape
-
-        predict = np.zeros(b, dtype=int)
-        with autocast():
-            output, loss = model.forward(input_image, gt=target_image, label=labels, train=False)
-            pixel_loss_neg = loss['pixel_loss_neg']
-            pixel_loss_pos = loss['pixel_loss_pos']
-
-        avg_loss.update(pixel_loss_neg.mean().item(), b)
-        idx_neg = (pixel_loss_pos > pixel_loss_neg).cpu().numpy()
-        idx_pos = (pixel_loss_pos <= pixel_loss_neg).cpu().numpy()
-        predict[idx_pos] = 1
-        predict[idx_neg] = 0
-        for i in range(len(predict)):
-            predict_list.append(predict[i])
-            label_list.append(labels[i].item())
-
-    predict_list = np.asarray(predict_list)
-    label_list = np.asarray(label_list)
-    assert predict_list.size == label_list.size, "INFERENCE LENGTH MUST MATCH LABEL LENGTH."
-    accuracy = roc_auc_score(y_true=label_list, y_score=predict_list)
-    print("EVALUATE FRAME NUMBER: ", predict_list.size)
-    return accuracy, 100
-
-
-def evaluate_resnet(model, test_batch, args):
-    model.eval()
-
-    counter = 0
-    tp = 0
-    classes = ['Normal','Arson','Explosion','Fall','Fighting']
-    for k, (images, labels) in enumerate(test_batch):
-        images = images.cuda(non_blocking=True)
-        labels = labels.cuda(non_blocking=True)
-        label = labels if args.label else None
-        label = label.view(-1)
-        input_image = images.detach()
-
-        with autocast():
-            logit = model.forward(input_image)
-            class_vector = F.softmax(logit, 1).data.squeeze()
-            assert len(class_vector) == len(label), "class number must match"
-            probs, idx = class_vector.sort(1, True)
-            idx = idx[:,0]
-            tp += torch.sum(idx.view(-1)==label).item()
-            counter += len(label)
-
-    accuracy = tp / counter
-    return accuracy

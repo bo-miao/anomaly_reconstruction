@@ -39,8 +39,6 @@ from utils.utils import *
 from utils.demo import *
 from utils import lr_scheduler, metric, prefetch, summary
 from model.vae import *
-from model.deeplab import *
-from model.light_resnet import *
 from model.discriminator import *
 from utils.datasets import *
 
