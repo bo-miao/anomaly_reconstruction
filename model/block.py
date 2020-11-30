@@ -129,11 +129,8 @@ class Decoder(torch.nn.Module):
 
 ###################################################
 class Encoder_Free(torch.nn.Module):
-    def __init__(self, t_length=5, n_channel=3, block='Basic'):
+    def __init__(self, t_length=5, n_channel=3, block='Basic', in_c=3):
         super(Encoder_Free, self).__init__()
-
-        # in_c = n_channel * (t_length - 1)
-        in_c = 3
         c = [16, 32, 16]
         self.conv1 = torch.nn.Sequential(
             torch.nn.Conv2d(in_channels=in_c, out_channels=c[0], kernel_size=3, stride=1, padding=1),

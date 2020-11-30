@@ -21,13 +21,13 @@ python net.py \
     --interval 1 \
     --visualize 0 \
     --visualize_input 0 \
-    -b 64  \
-    --test_batch_size 64 \
+    -b 32  \
+    --test_batch_size 32 \
     --workers_test 4 \
     --h 256 \
     --w 256 \
     --discriminator '' \
-    --arch 'Unet_Free_Adversarial' \
+    --arch 'Unet_Free_Supervised' \
     --encoder_arch 'Encoder_Free' \
     --decoder_arch 'Decoder_Free' \
     --dataset_type 'airs_anomaly2' \
@@ -41,7 +41,8 @@ python net.py \
     --epochs 100 \
     --is_amp 1 \
     --optim 'adamW' \
+    --evaluate \
+    --demo 'video|/data/miaobo/script/video2/Normal_006.mp4'
     #--resume '/home/miaobo/project/anomaly_demo2/ckpt/best_37ResUnetAdversarial0,1_ResUnetAdversarial__airs_anomaly2_checkpoint.pth.tar' \
-    #--evaluate \
-    #--demo 'video|/data/miaobo/script/video2/Normal_006.mp4'
+
 

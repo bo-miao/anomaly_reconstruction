@@ -19,8 +19,8 @@ class Unet_Free(torch.nn.Module):
         super(Unet_Free, self).__init__()
         n_channel = args.c
         t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
-        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic') # Encoder_Free
-        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic') # Decoder_Free
+        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic')
+        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic')
         self.criterion = criterion
         self.args = args
 
@@ -51,6 +51,33 @@ class Unet(torch.nn.Module):
         feature, skip1, skip2, skip3 = self.encoder(x)
         reconstructed_image = self.decoder(feature, skip1, skip2, skip3)
         pixel_loss = self.criterion(reconstructed_image, gt)
+        loss = {'pixel_loss': pixel_loss}
+        return reconstructed_image, loss
+
+
+# SUPERVISED
+class Unet_Free_Supervised(torch.nn.Module):
+    def __init__(self, criterion=None, args=None):
+        super(Unet_Free_Supervised, self).__init__()
+        n_channel = args.c
+        t_length = args.t_length // args.interval + 1 if args.interval > 1 else args.t_length
+        self.encoder = eval(args.encoder_arch)(t_length, n_channel, block='Basic', in_c=n_channel*t_length) # Encoder_Free
+        self.decoder = eval(args.decoder_arch)(t_length, n_channel, block='Basic') # Decoder_Free
+        self.criterion = criterion
+        self.args = args
+
+    @autocast()
+    def forward(self, x, gt=None, label=None, train=True):
+        if train:
+            # noise = torch.from_numpy(-1 + 2*np.random.random((c, h, w)), dtype=float).cuda()
+            noise = torch.zeros_like(gt[0]).cuda()
+            label = label.view(-1)
+            gt[label == 1] = noise
+
+        feature, skip1, skip2, skip3 = self.encoder(x)
+        reconstructed_image = self.decoder(feature, skip1, skip2, skip3)
+        pixel_loss = self.criterion(reconstructed_image, gt[:,3:6])
+        pixel_loss = pixel_loss.view(pixel_loss.shape[0], -1).mean(1)
         loss = {'pixel_loss': pixel_loss}
         return reconstructed_image, loss
 
@@ -129,7 +156,7 @@ class ResUnetAdversarial(torch.nn.Module):
         return reconstructed_image, loss
 
 
-# SUPERVISED
+# SUPERVISED (WORSE THAN OTHERS)
 class Unet_Free_Adversarial_Classifier(torch.nn.Module):
     def __init__(self, criterion=None, args=None):
         super(Unet_Free_Adversarial_Classifier, self).__init__()

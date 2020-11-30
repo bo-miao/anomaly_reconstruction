@@ -12,4 +12,8 @@ BLOCKS OF RECONSTRUCTION ARCHITECTURE IS IN ```model/block.py```
 
 EVALUATION CODE IS IN ```utils/utils.py```
 
+<<<<<<< Updated upstream
 DEMO CODE IS IN ```utils/demo.py```
+=======
+DEMO CODE IS IN ```utils/demo.py```
+>>>>>>> Stashed changes

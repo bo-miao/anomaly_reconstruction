@@ -2,36 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="419f7017-5446-48fb-b277-635a9c6abf65" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/bootstrap.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/datathumb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/memory.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/overview.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/teaser.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MNAD_files/thb.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/backbone/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/backbone/mobilenet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/backbone/resnet.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/model/block.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/block.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/deeplab.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/light_resnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/model/vae.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/vae.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/net.py" beforeDir="false" afterPath="$PROJECT_DIR$/net.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/net_classification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/classification_train_ucf.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/demo.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/test.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/test_ped2.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/test_shanghai.sh" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/shell/train_ucf.sh" beforeDir="false" afterPath="$PROJECT_DIR$/shell/train_ucf.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/datasets_classification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/demo_classification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,7 +36,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/parser_parameters.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-540">
+            <state relative-caret-position="1848">
               <caret line="66" column="74" selection-start-line="66" selection-start-column="73" selection-end-line="66" selection-end-column="74" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
@@ -70,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/net.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="476">
-              <caret line="50" column="15" lean-forward="true" selection-start-line="50" selection-start-column="15" selection-end-line="50" selection-end-column="15" />
+              <caret line="50" column="15" selection-start-line="50" selection-start-column="15" selection-end-line="50" selection-end-column="15" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -86,8 +61,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="56">
-                <caret line="2" column="37" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
+              <first_editor relative-caret-position="84">
+                <caret line="3" column="21" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="21" />
               </first_editor>
               <second_editor />
             </state>
@@ -97,8 +72,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/block.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="325" column="64" selection-start-line="325" selection-start-column="64" selection-end-line="325" selection-end-column="64" />
+            <state relative-caret-position="-1714">
+              <caret line="131" column="67" selection-start-line="131" selection-start-column="63" selection-end-line="131" selection-end-column="67" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -109,8 +84,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/vae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="58" column="27" selection-start-line="58" selection-start-column="6" selection-end-line="58" selection-end-column="27" />
+            <state relative-caret-position="3323">
+              <caret line="158" column="32" selection-start-line="158" selection-start-column="32" selection-end-line="158" selection-end-column="32" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -118,11 +93,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/shell/train_ucf.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="896">
-              <caret line="32" column="33" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="33" />
+            <state relative-caret-position="408">
+              <caret line="45" column="4" selection-start-line="45" selection-start-column="4" selection-end-line="45" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -130,7 +105,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
+            <state relative-caret-position="3360">
               <caret line="120" column="18" selection-start-line="120" selection-start-column="4" selection-end-line="120" selection-end-column="18" />
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
@@ -163,7 +138,6 @@
       <find>Encoder_Free</find>
       <find>conv1</find>
       <find>for i in range(c//3)</find>
-      <find>Unet_Free_Adversarial</find>
       <find>classifier</find>
       <find>mark</find>
       <find>HeadBlock</find>
@@ -178,8 +152,9 @@
       <find>Residual</find>
       <find>Decoder_Norm3</find>
       <find>evaluate_object_adversarial</find>
-      <find>evaluate_new_D</find>
       <find>Basic</find>
+      <find>evaluate_new_D</find>
+      <find>Unet_Free_Adversarial</find>
     </findStrings>
     <dirStrings>
       <dir>D:\github\anomaly_demo3</dir>
@@ -209,12 +184,12 @@
         <option value="$PROJECT_DIR$/utils/demo_classification.py" />
         <option value="$PROJECT_DIR$/shell/ResUnetAdversarial.sh" />
         <option value="$PROJECT_DIR$/utils/demo.py" />
-        <option value="$PROJECT_DIR$/model/vae.py" />
-        <option value="$PROJECT_DIR$/model/block.py" />
         <option value="$PROJECT_DIR$/utils/utils.py" />
-        <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/shell/train_ucf.sh" />
         <option value="$PROJECT_DIR$/net.py" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/model/block.py" />
+        <option value="$PROJECT_DIR$/model/vae.py" />
+        <option value="$PROJECT_DIR$/shell/train_ucf.sh" />
       </list>
     </option>
   </component>
@@ -230,6 +205,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -256,7 +232,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -338,18 +313,19 @@
       <workItem from="1606388506720" duration="1609000" />
       <workItem from="1606456657501" duration="4125000" />
       <workItem from="1606563628268" duration="11695000" />
-      <workItem from="1606633996791" duration="3119000" />
+      <workItem from="1606633996791" duration="3376000" />
+      <workItem from="1606712965097" duration="1104000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="117302000" />
+    <option name="totallyTimeSpent" value="118663000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1554" height="832" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16377005" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1657754" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -417,20 +393,8 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/shell/test_ped2.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="23" selection-start-line="23" selection-end-line="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/shell/test_shanghai.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/shell/test_ped2.sh" />
+    <entry file="file://$PROJECT_DIR$/shell/test_shanghai.sh" />
     <entry file="file://$PROJECT_DIR$/net_residual_classification.py" />
     <entry file="file://$PROJECT_DIR$/net_singleclassifier.py" />
     <entry file="file://$PROJECT_DIR$/model/norm.py">
@@ -470,16 +434,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/backbone/resnet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="158" column="13" selection-start-line="158" selection-start-column="13" selection-end-line="158" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/model/backbone/resnet.py" />
     <entry file="file://$PROJECT_DIR$/shell/train_shanghai.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -487,33 +442,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/demo_classification.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="117" column="48" selection-start-line="117" selection-start-column="36" selection-end-line="117" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/net_classification.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4676">
-          <caret line="174" column="26" selection-start-line="174" selection-start-column="8" selection-end-line="174" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/datasets_classification.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="71" selection-start-line="71" selection-end-line="71" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/demo_classification.py" />
+    <entry file="file://$PROJECT_DIR$/net_classification.py" />
+    <entry file="file://$PROJECT_DIR$/utils/datasets_classification.py" />
     <entry file="file://$PROJECT_DIR$/utils/datasets.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="28">
@@ -528,43 +459,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/light_resnet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="19" column="31" lean-forward="true" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/block.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="325" column="64" selection-start-line="325" selection-start-column="64" selection-end-line="325" selection-end-column="64" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/shell/classification_train_ucf.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-280">
-          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/parser_parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-540">
-          <caret line="66" column="74" selection-start-line="66" selection-start-column="73" selection-end-line="66" selection-end-column="74" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/model/light_resnet.py" />
+    <entry file="file://$PROJECT_DIR$/shell/classification_train_ucf.sh" />
     <entry file="file://$PROJECT_DIR$/model/discriminator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="728">
@@ -575,35 +471,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="120" column="18" selection-start-line="120" selection-start-column="4" selection-end-line="120" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2892">
-          <caret line="13" column="87" selection-start-line="13" selection-start-column="81" selection-end-line="13" selection-end-column="87" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-638">
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/model/model.py" />
+    <entry file="file://$PROJECT_DIR$/functions.py" />
     <entry file="file://$PROJECT_DIR$/utils/demo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1652">
@@ -614,11 +483,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/parser_parameters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1848">
+          <caret line="66" column="74" selection-start-line="66" selection-start-column="73" selection-end-line="66" selection-end-column="74" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3360">
+          <caret line="120" column="18" selection-start-line="120" selection-start-column="4" selection-end-line="120" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/net.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="50" column="15" selection-start-line="50" selection-start-column="15" selection-end-line="50" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="56">
-            <caret line="2" column="37" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
+          <first_editor relative-caret-position="84">
+            <caret line="3" column="21" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="21" />
           </first_editor>
           <second_editor />
         </state>
@@ -626,8 +525,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/vae.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="58" column="27" selection-start-line="58" selection-start-column="6" selection-end-line="58" selection-end-column="27" />
+        <state relative-caret-position="3323">
+          <caret line="158" column="32" selection-start-line="158" selection-start-column="32" selection-end-line="158" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/block.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1714">
+          <caret line="131" column="67" selection-start-line="131" selection-start-column="63" selection-end-line="131" selection-end-column="67" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -636,18 +545,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shell/train_ucf.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="896">
-          <caret line="32" column="33" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/net.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="50" column="15" lean-forward="true" selection-start-line="50" selection-start-column="15" selection-end-line="50" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="408">
+          <caret line="45" column="4" selection-start-line="45" selection-start-column="4" selection-end-line="45" selection-end-column="4" />
         </state>
       </provider>
     </entry>
