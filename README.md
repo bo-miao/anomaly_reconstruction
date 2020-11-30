@@ -1,10 +1,15 @@
-# anomaly_demo3
+# anomaly_reconstruction
 
-TASK DEPLOYMENT IS ```shell/train_xxx.py```
-ENTRANCE IS ```net.py```
+TASK DEPLOYMENT IS IN ```shell/train_xxx.sh```
+A SAMPLE IS ```sh train_ucf.sh```
 
-RECONSTRUCTION ARCHITECTURE IS ```model/vae.py```
-BLOCKS OF RECONSTRUCTION ARCHITECTURE IS ```model/block.py``
 
-EVALUATION CODE IS ```utils/utils.py```
-DEMO CODE IS ```utils/demo.py```
+ENTRANCE IS IN ```net.py```
+
+RECONSTRUCTION ARCHITECTURE IS IN ```model/vae.py```
+
+BLOCKS OF RECONSTRUCTION ARCHITECTURE IS IN ```model/block.py```
+
+EVALUATION CODE IS IN ```utils/utils.py```
+
+DEMO CODE IS IN ```utils/demo.py```
