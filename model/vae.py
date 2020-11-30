@@ -55,7 +55,7 @@ class Unet(torch.nn.Module):
         return reconstructed_image, loss
 
 
-# SUPERVISED
+# SUPERVISED 0.0047s
 class Unet_Free_Supervised(torch.nn.Module):
     def __init__(self, criterion=None, args=None):
         super(Unet_Free_Supervised, self).__init__()
@@ -82,7 +82,7 @@ class Unet_Free_Supervised(torch.nn.Module):
         return reconstructed_image, loss
 
 
-# SUPERVISED
+# SUPERVISED 0.01s
 class Unet_Free_Adversarial(torch.nn.Module):
     def __init__(self, criterion=None, args=None):
         super(Unet_Free_Adversarial, self).__init__()
@@ -120,7 +120,7 @@ class Unet_Free_Adversarial(torch.nn.Module):
         return reconstructed_image, loss
 
 
-# SUPERVISED
+# SUPERVISED 0.023s
 class ResUnetAdversarial(torch.nn.Module):
     def __init__(self, criterion=None, args=None):
         super(ResUnetAdversarial, self).__init__()

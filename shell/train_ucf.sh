@@ -7,7 +7,7 @@ export CUDA_VISIBLE_DEVICES=${gpus}
 echo "using gpus ${gpus}"
 
 port=$(date "+%S")
-suffix=${port}'Unet_Free_Adversarial'${gpus}
+suffix=${port}'Unet_Free_Supervised'${gpus}
 dist_url='tcp://127.0.0.1:72'${port}
 echo ${dist_url}
 

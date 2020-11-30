@@ -49,12 +49,14 @@ def process_predictions(data, model, frame, args):
     input_image = images.detach()
     target_image = images.detach()
     # inference
+    s_ = time.time()
     with autocast():
         #output, loss, logit = model.forward(input_image, gt=target_image, label=None, train=False)
         # score = logit.view(-1).item()
 
         output, loss = model.forward(input_image, gt=target_image, label=None, train=False)
         loss = loss['pixel_loss'].view(loss['pixel_loss'].shape[0], -1).mean()
+    print("INFERENCE SINGLE FRAME TIME COST: {}s".format(time.time() - s_))
     score = psnr(loss.item())
     score = (score - 3.5880800460751594) / (25.215500099559964 - 3.5880800460751594)
 
